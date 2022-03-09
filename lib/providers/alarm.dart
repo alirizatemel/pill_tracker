@@ -10,11 +10,11 @@ class AlarmItem {
   final String time;
   final String pillId;
   AlarmItem(
-      {@required this.id,
-      @required this.name,
-      @required this.weekDays,
-      @required this.time,
-      @required this.pillId});
+      {required this.id,
+      required this.name,
+      required this.weekDays,
+      required this.time,
+      required this.pillId});
 }
 
 class Alarm with ChangeNotifier {

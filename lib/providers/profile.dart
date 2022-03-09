@@ -6,8 +6,8 @@ class Profile with ChangeNotifier {
   final DateTime birthDate;
   final String alergens;
   Profile(
-      {@required this.id,
-      @required this.fullName,
-      @required this.birthDate,
-      @required this.alergens});
+      {required this.id,
+    required this.fullName,
+    required this.birthDate,
+    required this.alergens});
 }

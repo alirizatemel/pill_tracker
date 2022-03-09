@@ -24,14 +24,16 @@ class MyApp extends StatelessWidget {
           value: Auth(),
         ),
         ChangeNotifierProxyProvider<Auth, Pills>(
-          create: (ctx, auth, previousPills) => Pills(
+          create: null,
+          update: (ctx, auth, previousPills) => Pills(
             auth.token,
             auth.userId,
             previousPills == null ? [] : previousPills.items,
           ),
         ),
         ChangeNotifierProxyProvider<Auth, Alarm>(
-          builder: (ctx, auth, previousAlarms) => Alarm(
+          create:null,
+          update: (ctx, auth, previousAlarms) => Alarm(
             auth.token,
             auth.userId,
             previousAlarms == null ? [] : previousAlarms.alarms,

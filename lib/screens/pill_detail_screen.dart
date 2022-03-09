@@ -13,7 +13,7 @@ class PillDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final productId =
-        ModalRoute.of(context).settings.arguments as String; // is the id!
+        ModalRoute.of(context)!.settings.arguments as String; // is the id!
     final loadedProduct = Provider.of<Pills>(
       context,
       listen: false,
