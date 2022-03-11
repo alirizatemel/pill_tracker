@@ -4,6 +4,7 @@ import 'package:pill_tracker/screens/new_alarm.dart';
 import 'package:provider/provider.dart';
 import '../providers/alarm.dart';
 import 'package:path/path.dart';
+import '../widgets/app_drawer.dart';
 
 class AlarmScreen extends StatefulWidget {
   static const routeName = '/alarm';
@@ -47,7 +48,8 @@ class _AlarmScreenState extends State<AlarmScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Pill Tracker')),
+      appBar: AppBar(title: Text('Alarms')),
+      drawer: AppDrawer(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
@@ -63,12 +65,6 @@ class _AlarmScreenState extends State<AlarmScreen> {
                 SizedBox(
                   height: 20,
                 ),
-                Container(
-                    height: 200,
-                    child: Image.asset(
-                      'assets/images/waiting.png',
-                      fit: BoxFit.cover,
-                    )),
               ],
             )
           : ListView.builder(

@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
           routes: {
             AlarmScreen.routeName: (ctx) => AlarmScreen([]),
             ProfileScreen.routeName: (ctx) => ProfileScreen(),
-            PillScreen.routeName: (ctx) => PillScreen()
+            PillScreen.routeName: (ctx) => PillScreen([])
           },
         ),
       ),

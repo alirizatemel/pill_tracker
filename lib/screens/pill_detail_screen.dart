@@ -25,14 +25,6 @@ class PillDetailScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            SizedBox(height: 10),
-            Text(
-              '\$${loadedProduct.milligram}',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 20,
-              ),
-            ),
             SizedBox(
               height: 10,
             ),

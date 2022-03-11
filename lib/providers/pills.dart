@@ -32,7 +32,6 @@ class Pills with ChangeNotifier {
         loadedPills.add(Pill(
           id: pillId,
           name: pillData.name,
-          milligram: pillData.milligram,
           qrCode: pillData.qrCode,
         ));
       });
@@ -50,13 +49,11 @@ class Pills with ChangeNotifier {
         url,
         body: json.encode({
           'name': pill.name,
-          'milligram': pill.milligram,
           'qrCode': pill.qrCode,
         }),
       );
       final newPill = Pill(
         name: pill.name,
-        milligram: pill.milligram,
         qrCode: pill.qrCode,
         id: json.decode(response.body)['name'],
       );

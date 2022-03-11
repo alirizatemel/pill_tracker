@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/app_drawer.dart';
 
 class ProfileScreen extends StatefulWidget {
   static const routeName = '/profile';
@@ -14,6 +15,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         title: Text('Profile'),
       ),
+      drawer: AppDrawer(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
