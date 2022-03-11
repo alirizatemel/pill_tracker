@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
           update: (ctx, auth, previousPills) => Pills(
             auth.token,
             auth.userId,
+            // ignore: unnecessary_null_comparison
             previousPills == null ? [] : previousPills.items,
           ),
         ),
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
           update: (ctx, auth, previousAlarms) => Alarm(
             auth.token,
             auth.userId,
+            // ignore: unnecessary_null_comparison
             previousAlarms == null ? [] : previousAlarms.alarms,
           ),
         ),
@@ -44,12 +46,10 @@ class MyApp extends StatelessWidget {
         builder: (ctx, auth, _) => MaterialApp(
           title: 'pill tracker',
           theme: ThemeData(
-            primarySwatch: Colors.purple,
-            accentColor: Colors.deepOrange,
-            fontFamily: 'Lato',
+            fontFamily: 'Lato', colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.purple).copyWith(secondary: Colors.green[800]),
           ),
           home: auth.isAuth
-              ? AlarmScreen()
+              ? AlarmScreen([])
               : FutureBuilder(
                   future: auth.tryAutoLogin(),
                   builder: (ctx, authResultSnapshot) =>
@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
                           : AuthScreen(),
                 ),
           routes: {
-            AlarmScreen.routeName: (ctx) => AlarmScreen(),
+            AlarmScreen.routeName: (ctx) => AlarmScreen([]),
             ProfileScreen.routeName: (ctx) => ProfileScreen(),
             PillScreen.routeName: (ctx) => PillScreen()
           },

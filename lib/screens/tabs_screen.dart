@@ -17,7 +17,7 @@ class _TabsScreenState extends State<TabsScreen> {
   void initState() {
     _pages = [
       {
-        'page': AlarmScreen(),
+        'page': AlarmScreen([]),
         'title': 'Alarms',
       },
       {
