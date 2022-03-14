@@ -30,7 +30,7 @@ class _PillScreenState extends State<PillScreen> {
       builder: (_) {
         return GestureDetector(
           onTap: () {},
-          // child: NewPill(_addNewPill),
+          child: NewPill(_addNewPill),
           behavior: HitTestBehavior.opaque,
         );
       },

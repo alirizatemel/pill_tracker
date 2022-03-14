@@ -2,21 +2,40 @@ import 'package:flutter/material.dart';
 import '../widgets/app_drawer.dart';
 
 class NewPill extends StatefulWidget {
-  static const routeName = '/pill';
+  final Function addPill;
+
+  NewPill(this.addPill);
 
   @override
   State<NewPill> createState() => _NewPillState();
 }
 
 class _NewPillState extends State<NewPill> {
-  final _nameController=TextEditingController();
-  final _qrCodeController=TextEditingController();
-  
+  final _nameController = TextEditingController();
+  final _qrCodeController = TextEditingController();
+
+  void _submitData() {
+    if (_nameController.text.isEmpty) {
+      return;
+    }
+    final enteredName = _nameController.text;
+    final enteredQrCode = _qrCodeController.text;
+
+    if (enteredName.isEmpty || enteredQrCode.isEmpty) {
+      return;
+    }
+
+    widget.addPill(enteredName, enteredQrCode);
+
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return  Container(
+    return Card(
+      elevation: 5,
+      child: Container(
         padding: EdgeInsets.all(10),
-        width: double.infinity,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
@@ -33,10 +52,12 @@ class _NewPillState extends State<NewPill> {
             ),
             ElevatedButton(
               child: Text('Save'),
-              onPressed: () {},
+              style: ElevatedButton.styleFrom(primary: Colors.purple, onPrimary:  Colors.white),
+              onPressed: _submitData,
             ),
           ],
         ),
-      );
+      ),
+    );
   }
 }

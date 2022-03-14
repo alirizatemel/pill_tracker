@@ -32,8 +32,8 @@ class _NewAlarmState extends State<NewAlarm> {
     widget.addAlarm(
       enteredName,
       enteredTime,
-      enteredWeekDays,
       enteredPill,
+      enteredWeekDays,
     );
 
     Navigator.of(context).pop();
