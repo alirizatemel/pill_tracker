@@ -32,30 +32,37 @@ class _NewPillState extends State<NewPill> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: Container(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            TextField(
-              decoration: InputDecoration(labelText: 'Drug Name'),
+    return SingleChildScrollView(
+      child: Card(
+        elevation: 5,
+        child: Container(
+          padding: EdgeInsets.only(
+              top:10,
+              right: 10,
+              left: 10,
+              bottom: MediaQuery.of(context).viewInsets.bottom+10
             ),
-            Text(
-              'Or',
-              style: TextStyle(fontSize: 28),
-              textAlign: TextAlign.center,
-            ),
-            TextField(
-              decoration: InputDecoration(labelText: 'SCAN QR CODE'),
-            ),
-            ElevatedButton(
-              child: Text('Save'),
-              style: ElevatedButton.styleFrom(primary: Colors.purple, onPrimary:  Colors.white),
-              onPressed: _submitData,
-            ),
-          ],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              TextField(
+                decoration: InputDecoration(labelText: 'Drug Name'),
+              ),
+              Text(
+                'Or',
+                style: TextStyle(fontSize: 28),
+                textAlign: TextAlign.center,
+              ),
+              TextField(
+                decoration: InputDecoration(labelText: 'SCAN QR CODE'),
+              ),
+              ElevatedButton(
+                child: Text('Save'),
+                style: ElevatedButton.styleFrom(primary: Colors.purple, onPrimary:  Colors.white),
+                onPressed: _submitData,
+              ),
+            ],
+          ),
         ),
       ),
     );

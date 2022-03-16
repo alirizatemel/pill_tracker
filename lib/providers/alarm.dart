@@ -33,10 +33,36 @@ class Alarm with ChangeNotifier {
     return _alarms.length;
   }
 
+
+  Future<void> fetchAndSetAlarms([bool filterByUser = false]) async {
+    final filterString = filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
+    var url =
+        Uri.https('pill-trucker-default-rtdb.europe-west1.firebasedatabase.app', '/alarms.json',{'auth': authToken});
+    try {
+      final response = await http.get(url);
+      final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      if (extractedData == null) {
+        return;
+      }
+      final List<AlarmItem> loadedAlarms = [];
+      extractedData.forEach((alarmId, alarmData) {
+        loadedAlarms.add(AlarmItem(
+          id: alarmId,
+          name: alarmData['name'],
+          weekDays: alarmData['weekDays'],
+          time: alarmData['time'],
+          pillId: alarmData['pillId'],
+        ));
+      });
+      _alarms = loadedAlarms;
+      notifyListeners();
+    } catch (error) {
+      throw (error);
+    }
+  }
+
   Future<void> addAlarm(AlarmItem alarm) async {
-    
-    final url =
-        Uri.https('https://pill-trucker-default-rtdb.europe-west1.firebasedatabase.app/', '/alarms.json?auth=$authToken');
+    final url = Uri.https('pill-trucker-default-rtdb.europe-west1.firebasedatabase.app', '/alarms.json',{'auth': authToken});
     try {
       final response = await http.post(
         url,
@@ -63,7 +89,6 @@ class Alarm with ChangeNotifier {
   }
 
   void addItem(String pillId, String name, String time, String weekDays) {
-    print('TESST');
     if (_items.containsKey(pillId)) {
       // change quantity...
       _items.update(

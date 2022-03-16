@@ -28,7 +28,6 @@ class _AlarmScreenState extends State<AlarmScreen> {
       weekDays: weekDays,
       id: DateTime.now().toString(),
     );
-    print(newAlarm);
     await Provider.of<Alarm>(this.context,listen: false).addAlarm(newAlarm);
   }
 

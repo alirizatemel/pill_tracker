@@ -42,39 +42,46 @@ class _NewAlarmState extends State<NewAlarm> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: Container(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            TextField(
-              decoration: InputDecoration(labelText: 'Name'),
-              controller: _nameController,
-              onSubmitted: (_) => _submitData(),
-            ),
-            TextField(
-              decoration: InputDecoration(labelText: 'Week Days'),
-              controller: _weekDaysController,
-              onSubmitted: (_) => _submitData(),
-            ),
-            TextField(
-              decoration: InputDecoration(labelText: 'Time'),
-              controller: _timeController,
-              onSubmitted: (_) => _submitData(),
-            ),
-            TextField(
-              decoration: InputDecoration(labelText: 'Pill'),
-              controller: _pillController,
-              onSubmitted: (_) => _submitData(),
-            ),
-            ElevatedButton(
-              child: Text('Add Alarm'),
-              style: ElevatedButton.styleFrom(primary: Colors.purple, onPrimary:  Colors.white),
-              onPressed: _submitData,
-            ),
-          ],
+    return SingleChildScrollView(
+      child: Card(
+        elevation: 5,
+        child: Container(
+          padding: EdgeInsets.only(
+            top:10,
+            right: 10,
+            left: 10,
+            bottom: MediaQuery.of(context).viewInsets.bottom+10
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              TextField(
+                decoration: InputDecoration(labelText: 'Name'),
+                controller: _nameController,
+                onSubmitted: (_) => _submitData(),
+              ),
+              TextField(
+                decoration: InputDecoration(labelText: 'Week Days'),
+                controller: _weekDaysController,
+                onSubmitted: (_) => _submitData(),
+              ),
+              TextField(
+                decoration: InputDecoration(labelText: 'Time'),
+                controller: _timeController,
+                onSubmitted: (_) => _submitData(),
+              ),
+              TextField(
+                decoration: InputDecoration(labelText: 'Pill'),
+                controller: _pillController,
+                onSubmitted: (_) => _submitData(),
+              ),
+              ElevatedButton(
+                child: Text('Add Alarm'),
+                style: ElevatedButton.styleFrom(primary: Colors.purple, onPrimary:  Colors.white),
+                onPressed: _submitData,
+              ),
+            ],
+          ),
         ),
       ),
     );
