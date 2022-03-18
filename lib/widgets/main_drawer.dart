@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pill_tracker/screens/alarm.dart';
+import 'package:pill_tracker/screens/alarm_screen.dart';
 import 'package:pill_tracker/screens/profile.dart';
 
 class MainDrawer extends StatelessWidget {

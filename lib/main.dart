@@ -9,7 +9,7 @@ import './providers/alarm.dart';
 
 import './screens/tabs_screen.dart';
 import './screens/profile.dart';
-import './screens/alarm.dart';
+import 'screens/alarm_screen.dart';
 import './screens/auth_screen.dart';
 import './screens/splash_screen.dart';
 
@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
             fontFamily: 'Lato', colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.purple).copyWith(secondary: Colors.green[800]),
           ),
           home: auth.isAuth
-              ? AlarmScreen([])
+              ? AlarmScreen()
               : FutureBuilder(
                   future: auth.tryAutoLogin(),
                   builder: (ctx, authResultSnapshot) =>
@@ -59,7 +59,8 @@ class MyApp extends StatelessWidget {
                           : AuthScreen(),
                 ),
           routes: {
-            AlarmScreen.routeName: (ctx) => AlarmScreen([]),
+            '/': (ctx) => TabsScreen(),
+            AlarmScreen.routeName: (ctx) => AlarmScreen(),
             ProfileScreen.routeName: (ctx) => ProfileScreen(),
             PillScreen.routeName: (ctx) => PillScreen([])
           },

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../widgets/main_drawer.dart';
 import './profile.dart';
-import './alarm.dart';
+import 'alarm_screen.dart';
 
 class TabsScreen extends StatefulWidget {
   @override
@@ -17,7 +17,7 @@ class _TabsScreenState extends State<TabsScreen> {
   void initState() {
     _pages = [
       {
-        'page': AlarmScreen([]),
+        'page': AlarmScreen(),
         'title': 'Alarms',
       },
       {
@@ -52,18 +52,23 @@ class _TabsScreenState extends State<TabsScreen> {
         items: [
           BottomNavigationBarItem(
             backgroundColor: Theme.of(context).primaryColor,
-            icon: Icon(Icons.medication),
-            label: 'Pills',
-          ),
-          BottomNavigationBarItem(
-            backgroundColor: Theme.of(context).primaryColor,
-            icon: Icon(Icons.home_filled),
+            icon: Icon(Icons.home),
             label: 'Home',
           ),
           BottomNavigationBarItem(
             backgroundColor: Theme.of(context).primaryColor,
-            icon: Icon(Icons.alarm),
-            label: 'Alarms',
+            icon: Icon(Icons.newspaper),
+            label: 'Updates',
+          ),
+          BottomNavigationBarItem(
+            backgroundColor: Theme.of(context).primaryColor,
+            icon: Icon(Icons.medical_services_rounded),
+            label: 'Pills',
+          ),
+          BottomNavigationBarItem(
+            backgroundColor: Theme.of(context).primaryColor,
+            icon: Icon(Icons.more_horiz),
+            label: 'More',
           ),
         ],
       ),

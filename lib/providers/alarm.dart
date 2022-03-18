@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:pill_tracker/screens/new_alarm.dart';
+import '../models/http_exception.dart';
+
 
 class AlarmItem {
   final String id;
@@ -114,9 +116,20 @@ class Alarm with ChangeNotifier {
     notifyListeners();
   }
 
-  void removeItem(String alarmId) {
-    _items.remove(alarmId);
+  Future<void> deleteAlarm(String id) async {
+    final url =
+        Uri.https('pill-trucker-default-rtdb.europe-west1.firebasedatabase.app', '/alarms/$id.json',{'auth': authToken});
+    final existingAlarmIndex = _alarms.indexWhere((prod) => prod.id == id);
+    AlarmItem? existingAlarm = _alarms[existingAlarmIndex];
+    _alarms.removeAt(existingAlarmIndex);
     notifyListeners();
+    final response = await http.delete(url);
+    if (response.statusCode >= 400) {
+      _alarms.insert(existingAlarmIndex, existingAlarm);
+      notifyListeners();
+      throw HttpException('Could not delete product.');
+    }
+    existingAlarm = null;
   }
 
   void clear() {

@@ -8,16 +8,26 @@ import '../widgets/app_drawer.dart';
 
 class AlarmScreen extends StatefulWidget {
   static const routeName = '/alarm';
-  final List<AlarmItem> alarms;
   // final Function deleteAlarm;
 
-  AlarmScreen(this.alarms);
 
   @override
   State<AlarmScreen> createState() => _AlarmScreenState();
 }
 
 class _AlarmScreenState extends State<AlarmScreen> {
+    var _isInit = true;
+  var _isLoading = false;
+
+  @override
+  void initState() {
+    // Provider.of<Products>(context).fetchAndSetProducts(); // WON'T WORK!
+    // Future.delayed(Duration.zero).then((_) {
+    //   Provider.of<Products>(context).fetchAndSetProducts();
+    // });
+    super.initState();
+  }
+
   Future<void> _addNewAlarm(
       String aName, String aTime, String pillId, String weekDays) async {
     
@@ -29,6 +39,22 @@ class _AlarmScreenState extends State<AlarmScreen> {
       id: DateTime.now().toString(),
     );
     await Provider.of<Alarm>(this.context,listen: false).addAlarm(newAlarm);
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<Alarm>(this.context).fetchAndSetAlarms().then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
   }
 
   void _startAddNewAlarm(BuildContext ctx) {
@@ -44,8 +70,13 @@ class _AlarmScreenState extends State<AlarmScreen> {
     );
   }
 
+  void _deleteAlarm(String id){
+    Provider.of<Alarm>(this.context,listen: false).deleteAlarm(id);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final alarmData=Provider.of<Alarm>(context).alarms;
     return Scaffold(
       appBar: AppBar(title: Text('Alarms')),
       drawer: AppDrawer(),
@@ -54,7 +85,7 @@ class _AlarmScreenState extends State<AlarmScreen> {
         child: Icon(Icons.add),
         onPressed: () => _startAddNewAlarm(context),
       ),
-      body: widget.alarms.isEmpty
+      body: alarmData.isEmpty
           ? Column(
               children: <Widget>[
                 Text(
@@ -80,24 +111,24 @@ class _AlarmScreenState extends State<AlarmScreen> {
                       child: Padding(
                         padding: EdgeInsets.all(6),
                         child: FittedBox(
-                          child: Text('\$${widget.alarms[index].name}'),
+                          child: Text('Pill Image'),
                         ),
                       ),
                     ),
                     title: Text(
-                      widget.alarms[index].name,
+                      alarmData[index].name,
                       style: Theme.of(context).textTheme.headline6,
                     ),
-                    subtitle: Text(widget.alarms[index].time),
+                    subtitle: Text(alarmData[index].time),
                     trailing: IconButton(
                       icon: Icon(Icons.delete),
                       color: Theme.of(context).errorColor,
-                      onPressed: () {},
+                      onPressed: () => _deleteAlarm(alarmData[index].id),
                     ),
                   ),
                 );
               },
-              itemCount: widget.alarms.length,
+              itemCount: alarmData.length,
             ),
     );
   }

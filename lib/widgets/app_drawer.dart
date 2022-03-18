@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../screens/profile.dart';
 import '../screens/pill.dart';
-import '../screens/alarm.dart';
+import '../screens/alarm_screen.dart';
 import '../providers/auth.dart';
 
 class AppDrawer extends StatelessWidget {
