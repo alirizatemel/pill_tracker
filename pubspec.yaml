@@ -30,9 +30,10 @@ dependencies:
   flutter:
     sdk: flutter
   provider: ^4.3.3
-  intl: ^0.15.8
+  intl: ^0.17.0
   http: ^0.13.4
   shared_preferences: ^0.5.3+1
+  calendar_timeline: ^1.0.4
 
 
   # The following adds the Cupertino Icons font to your application.

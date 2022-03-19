@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 
 import '../widgets/main_drawer.dart';
-import './profile.dart';
-import 'alarm_screen.dart';
+import 'home.dart';
+import 'more_screen.dart';
+import 'updates_screen.dart';
+import 'pill.dart';
 
 class TabsScreen extends StatefulWidget {
+  const TabsScreen({Key? key}) : super(key: key);
+
   @override
   _TabsScreenState createState() => _TabsScreenState();
 }
@@ -17,12 +21,20 @@ class _TabsScreenState extends State<TabsScreen> {
   void initState() {
     _pages = [
       {
-        'page': AlarmScreen(),
-        'title': 'Alarms',
+        'page': HomeScreen(),
+        'title': 'Home',
       },
       {
-        'page': ProfileScreen(),
+        'page': UpdatesScreen(),
+        'title': 'Updates',
+      },
+      {
+        'page': PillScreen([]),
         'title': 'Profile',
+      },
+      {
+        'page': MoreScreen(),
+        'title': 'More',
       },
     ];
     super.initState();
@@ -37,9 +49,6 @@ class _TabsScreenState extends State<TabsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_pages[_selectedPageIndex]['title'] as String),
-      ),
       drawer: MainDrawer(),
       body: _pages[_selectedPageIndex]['page'] as Widget,
       bottomNavigationBar: BottomNavigationBar(
@@ -52,22 +61,22 @@ class _TabsScreenState extends State<TabsScreen> {
         items: [
           BottomNavigationBarItem(
             backgroundColor: Theme.of(context).primaryColor,
-            icon: Icon(Icons.home),
+            icon: const Icon(Icons.home),
             label: 'Home',
           ),
           BottomNavigationBarItem(
             backgroundColor: Theme.of(context).primaryColor,
-            icon: Icon(Icons.newspaper),
+            icon: const Icon(Icons.newspaper),
             label: 'Updates',
           ),
           BottomNavigationBarItem(
             backgroundColor: Theme.of(context).primaryColor,
-            icon: Icon(Icons.medical_services_rounded),
+            icon: const Icon(Icons.medical_services_rounded),
             label: 'Pills',
           ),
           BottomNavigationBarItem(
             backgroundColor: Theme.of(context).primaryColor,
-            icon: Icon(Icons.more_horiz),
+            icon: const Icon(Icons.more_horiz),
             label: 'More',
           ),
         ],

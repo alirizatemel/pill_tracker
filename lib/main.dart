@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pill_tracker/screens/home.dart';
 import 'package:pill_tracker/screens/pill.dart';
 import 'package:provider/provider.dart';
 
@@ -20,11 +21,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(
-          value: Auth(),
+        ChangeNotifierProvider(
+          create:(_)=> Auth(),
         ),
         ChangeNotifierProxyProvider<Auth, Pills>(
-          create: null,
+          create: (_)=>Pills('','',[]),
           update: (ctx, auth, previousPills) => Pills(
             auth.token,
             auth.userId,
@@ -33,8 +34,8 @@ class MyApp extends StatelessWidget {
           ),
         ),
         ChangeNotifierProxyProvider<Auth, Alarm>(
-          create:null,
-          update: (ctx, auth, previousAlarms) => Alarm(
+          create:(_)=>Alarm('','',[]),
+          update: (_, auth, previousAlarms) => Alarm(
             auth.token,
             auth.userId,
             // ignore: unnecessary_null_comparison
@@ -49,7 +50,7 @@ class MyApp extends StatelessWidget {
             fontFamily: 'Lato', colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.purple).copyWith(secondary: Colors.green[800]),
           ),
           home: auth.isAuth
-              ? AlarmScreen()
+              ? HomeScreen()
               : FutureBuilder(
                   future: auth.tryAutoLogin(),
                   builder: (ctx, authResultSnapshot) =>
@@ -59,7 +60,7 @@ class MyApp extends StatelessWidget {
                           : AuthScreen(),
                 ),
           routes: {
-            '/': (ctx) => TabsScreen(),
+            // '/': (ctx) => const TabsScreen(),
             AlarmScreen.routeName: (ctx) => AlarmScreen(),
             ProfileScreen.routeName: (ctx) => ProfileScreen(),
             PillScreen.routeName: (ctx) => PillScreen([])

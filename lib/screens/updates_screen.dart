@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/app_drawer.dart';
 
 class UpdatesScreen extends StatefulWidget {
-  static const routeName = '/profile';
+  static const routeName = '/updates';
   UpdatesScreen();
   @override
   _UpdatesScreenState createState() => _UpdatesScreenState();
@@ -20,17 +20,7 @@ class _UpdatesScreenState extends State<UpdatesScreen> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
           TextField(
-            decoration: InputDecoration(labelText: 'Full Name'),
-          ),
-          TextField(
-            decoration: InputDecoration(labelText: 'Birth Date'),
-          ),
-          TextField(
-            decoration: InputDecoration(labelText: 'Allergens'),
-          ),
-          ElevatedButton(
-            child: Text('Save'),
-            onPressed: () {},
+            decoration: InputDecoration(labelText: 'Updates'),
           ),
         ],
       ),
