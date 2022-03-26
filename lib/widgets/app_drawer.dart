@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pill_tracker/screens/home.dart';
 import 'package:provider/provider.dart';
 
 import '../screens/profile.dart';
 import '../screens/pill.dart';
-import '../screens/alarm_screen.dart';
 import '../providers/auth.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -36,10 +36,10 @@ class AppDrawer extends StatelessWidget {
           Divider(),
           ListTile(
             leading: Icon(Icons.punch_clock),
-            title: Text('Alarms'),
+            title: Text('Home'),
             onTap: () {
               Navigator.of(context)
-                  .pushReplacementNamed(AlarmScreen.routeName);
+                  .pushReplacementNamed(HomeScreen.routeName);
             },
           ),
           Divider(),

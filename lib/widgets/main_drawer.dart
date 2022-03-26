@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pill_tracker/screens/alarm_screen.dart';
+import 'package:pill_tracker/screens/home.dart';
 import 'package:pill_tracker/screens/profile.dart';
 
 class MainDrawer extends StatelessWidget {
@@ -46,8 +46,8 @@ class MainDrawer extends StatelessWidget {
           buildListTile('Profile', Icons.person, () {
             Navigator.of(context).pushReplacementNamed(ProfileScreen.routeName);
           }),
-          buildListTile('Alarms', Icons.alarm, () {
-            Navigator.of(context).pushReplacementNamed(AlarmScreen.routeName);
+          buildListTile('Home', Icons.alarm, () {
+            Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
           }),
         ],
       ),

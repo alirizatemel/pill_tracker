@@ -10,7 +10,6 @@ import './providers/alarm.dart';
 
 import './screens/tabs_screen.dart';
 import './screens/profile.dart';
-import 'screens/alarm_screen.dart';
 import './screens/auth_screen.dart';
 import './screens/splash_screen.dart';
 
@@ -61,7 +60,7 @@ class MyApp extends StatelessWidget {
                 ),
           routes: {
             // '/': (ctx) => const TabsScreen(),
-            AlarmScreen.routeName: (ctx) => AlarmScreen(),
+            HomeScreen.routeName:(ctx)=>HomeScreen(),
             ProfileScreen.routeName: (ctx) => ProfileScreen(),
             PillScreen.routeName: (ctx) => PillScreen([])
           },

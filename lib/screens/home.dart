@@ -25,32 +25,29 @@ class _HomeScreenState extends State<HomeScreen> {
     _resetSelectedDate();
   }
 
-  Future<void> _addNewAlarm(
-      String aName, String aTime, String pillId, String weekDays) async {
-    final newAlarm = AlarmItem(
-      name: aName,
-      time: aTime,
-      pillId: pillId,
-      weekDays: weekDays,
-      id: DateTime.now().toString(),
-    );
+  Future<void> _addNewAlarm(AlarmItem newAlarm) async {    
     await Provider.of<Alarm>(this.context, listen: false).addAlarm(newAlarm);
   }
 
   @override
   void didChangeDependencies() {
     if (_isInit) {
-      setState(() {
-        _isLoading = true;
-      });
-      Provider.of<Alarm>(this.context).fetchAndSetAlarms().then((_) {
-        setState(() {
-          _isLoading = false;
-        });
-      });
+      var today=DateTime.now();
+      _getAlarms(today);
     }
     _isInit = false;
     super.didChangeDependencies();
+  }
+
+  void _getAlarms(date) {
+    setState(() {
+      _isLoading = true;
+    });
+    Provider.of<Alarm>(this.context).fetchAndSetAlarms(date).then((_) {
+      setState(() {
+        _isLoading = false;
+      });
+    });
   }
 
   void _startAddNewAlarm(BuildContext ctx) {
@@ -58,7 +55,6 @@ class _HomeScreenState extends State<HomeScreen> {
       context: ctx,
       builder: (_) {
         return GestureDetector(
-          onTap: () {},
           child: NewAlarm(_addNewAlarm),
           behavior: HitTestBehavior.opaque,
         );
@@ -106,9 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   firstDate: DateTime.now(),
                   lastDate: DateTime.now().add(Duration(days: 365)),
                   onDateSelected: (date) {
-                    setState(() {
-                      _selectedDate = date!;
-                    });
+                    _getAlarms(date);
                   },
                   leftMargin: 10,
                   monthColor: Colors.black,
@@ -155,7 +149,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   itemCount: alarmData.length,
                 ),
-                
               ],
             ),
     );

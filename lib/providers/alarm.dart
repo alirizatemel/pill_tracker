@@ -5,19 +5,32 @@ import 'package:http/http.dart' as http;
 import 'package:pill_tracker/screens/new_alarm.dart';
 import '../models/http_exception.dart';
 
+enum AlarmType{
+  Date,
+  All
+}
 
 class AlarmItem {
   final String id;
   final String name;
   final String weekDays;
   final String time;
+  final String date;
+  final String duration;
   final String pillId;
+  final String userId;
+  final AlarmType alarmType;
   AlarmItem(
       {required this.id,
       required this.name,
       required this.weekDays,
       required this.time,
-      required this.pillId});
+      required this.date,
+      required this.duration,
+      required this.pillId,
+      required this.userId,
+      required this.alarmType
+      });
 }
 
 class Alarm with ChangeNotifier {
@@ -36,10 +49,13 @@ class Alarm with ChangeNotifier {
   }
 
 
-  Future<void> fetchAndSetAlarms([bool filterByUser = false]) async {
-    final filterString = filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
+  Future<void> fetchAndSetAlarms(DateTime date,[bool filterByUser = false]) async {
+    final weekDay=date.weekday;
+    var filterString = filterByUser ? 'orderByChild="userId"&equalTo="$userId"' : '';
+    //var filterString = 'orderBy="weekDay"&equalTo="$weekDay"';
+    Map<String,String> queryParams={'auth': authToken,'where':'userId:$userId'};
     var url =
-        Uri.https('pill-trucker-default-rtdb.europe-west1.firebasedatabase.app', '/alarms.json',{'auth': authToken});
+        Uri.https('pill-trucker-default-rtdb.europe-west1.firebasedatabase.app', '/alarms.json',queryParams);
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
@@ -53,7 +69,11 @@ class Alarm with ChangeNotifier {
           name: alarmData['name'],
           weekDays: alarmData['weekDays'],
           time: alarmData['time'],
+          date: alarmData['date'],
+          duration: alarmData['duration'],
           pillId: alarmData['pillId'],
+          userId: alarmData['userId'],
+          alarmType: alarmData['type'],
         ));
       });
       _alarms = loadedAlarms;
@@ -79,7 +99,11 @@ class Alarm with ChangeNotifier {
         name: alarm.name,
         weekDays: alarm.weekDays,
         time: alarm.time,
+        date: alarm.date,
+        duration: alarm.duration,
         pillId: alarm.pillId,
+        userId: alarm.userId,
+        alarmType: alarm.alarmType,
         id: json.decode(response.body)['name'],
       );
       _alarms.add(newAlarm);
@@ -90,31 +114,6 @@ class Alarm with ChangeNotifier {
     }
   }
 
-  void addItem(String pillId, String name, String time, String weekDays) {
-    if (_items.containsKey(pillId)) {
-      // change quantity...
-      _items.update(
-        pillId,
-        (existingAlarmItem) => AlarmItem(
-            id: existingAlarmItem.id,
-            name: existingAlarmItem.name,
-            time: existingAlarmItem.time,
-            weekDays: existingAlarmItem.weekDays,
-            pillId: existingAlarmItem.pillId),
-      );
-    } else {
-      _items.putIfAbsent(
-        pillId,
-        () => AlarmItem(
-            id: DateTime.now().toString(),
-            name: name,
-            time: time,
-            weekDays: weekDays,
-            pillId: pillId),
-      );
-    }
-    notifyListeners();
-  }
 
   Future<void> deleteAlarm(String id) async {
     final url =
