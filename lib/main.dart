@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
                               ConnectionState.waiting
                           ? SplashScreen()
                           : AuthScreen(),
-                ),
+          ),
           routes: {
             // '/': (ctx) => const TabsScreen(),
             HomeScreen.routeName:(ctx)=>HomeScreen(),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pill_tracker/providers/alarm.dart';
 
 class NewAlarm extends StatefulWidget {
   final Function addAlarm;
@@ -14,7 +15,7 @@ class _NewAlarmState extends State<NewAlarm> {
   final _nameController = TextEditingController();
   final _timeController = TextEditingController();
   final _weekDaysController = TextEditingController();
-  final _pillController= TextEditingController();
+  final _pillController = TextEditingController();
 
   void _submitData() {
     if (_timeController.text.isEmpty) {
@@ -25,20 +26,28 @@ class _NewAlarmState extends State<NewAlarm> {
     final enteredWeekDays = _weekDaysController.text;
     final enteredPill = _pillController.text;
 
-    if (enteredName.isEmpty || enteredTime.isEmpty || enteredWeekDays.isEmpty || enteredPill.isEmpty) {
+    if (enteredName.isEmpty ||
+        enteredTime.isEmpty ||
+        enteredWeekDays.isEmpty ||
+        enteredPill.isEmpty) {
       return;
     }
-
-    widget.addAlarm(
-      enteredName,
-      enteredTime,
-      enteredPill,
-      enteredWeekDays,
+    var newAlarm = AlarmItem(
+      name: enteredName,
+      time: enteredTime,
+      pillId: enteredPill,
+      weekDays: enteredWeekDays,
+      date: '26.03.2022',
+      duration: 'duration',
+      userId: '123',
+      id: '123123',
+      alarmType: 'test',
     );
+
+    widget.addAlarm(newAlarm);
 
     Navigator.of(context).pop();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -47,11 +56,10 @@ class _NewAlarmState extends State<NewAlarm> {
         elevation: 5,
         child: Container(
           padding: EdgeInsets.only(
-            top:10,
-            right: 10,
-            left: 10,
-            bottom: MediaQuery.of(context).viewInsets.bottom+10
-          ),
+              top: 10,
+              right: 10,
+              left: 10,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
@@ -77,7 +85,8 @@ class _NewAlarmState extends State<NewAlarm> {
               ),
               ElevatedButton(
                 child: Text('Add Alarm'),
-                style: ElevatedButton.styleFrom(primary: Colors.purple, onPrimary:  Colors.white),
+                style: ElevatedButton.styleFrom(
+                    primary: Colors.purple, onPrimary: Colors.white),
                 onPressed: _submitData,
               ),
             ],
