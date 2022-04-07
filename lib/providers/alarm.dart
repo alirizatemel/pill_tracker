@@ -31,10 +31,8 @@ class AlarmItem {
 
 class Alarm with ChangeNotifier {
   List<AlarmItem> _alarms = [];
-  final String authToken;
-  final String userId;
   Map<String, AlarmItem> _items = {};
-  Alarm(this.authToken, this.userId, this._alarms);
+  Alarm(this._alarms);
 
   List<AlarmItem> get alarms {
     return [..._alarms];
@@ -47,9 +45,6 @@ class Alarm with ChangeNotifier {
   Future<void> fetchAndSetAlarms(
     DateTime date,
   ) async {
-    print('fetchAndSetAlarms');
-    print(userId);
-    print(authToken);
     final weekDay = date.weekday;
     // var filterString = 'orderBy="userId"&equalTo="$userId"';
     // var filterString = '?orderBy="userId"&equalTo="123"';
@@ -66,34 +61,25 @@ class Alarm with ChangeNotifier {
         '/alarms.json' + filterString);
     try {
       final response = await http.get(url);
-      print('loop');
-      print(response.body);
+      
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
-      print('teretete');
+      
       if (extractedData == null) {
         return;
       }
-      print('teretete');
+      
       final List<AlarmItem> loadedAlarms = [];
       extractedData.forEach((alarmId, alarmData) {
         loadedAlarms.add(AlarmItem(
           id: 'asdas',
-          // name: alarmData['name'] ? alarmData['name'] : '',
-          name:'',
-          weekDays: '',
-          time: '',
-          date: '',
-          duration: '',
-          pillId: '',
-          userId: '',
-          alarmType: '',
-          // weekDays: alarmData['weekDays'] ? alarmData['weekDays'] : '',
-          // time: alarmData['time'] ? alarmData['time'] : '',
-          // date: alarmData['date'] ? alarmData['date'] : '',
-          // duration: alarmData['duration'] ? alarmData['duration'] : '',
-          // pillId: alarmData['pillId'] ? alarmData['pillId'] : '',
-          // userId: alarmData['userId'] ? alarmData['userId'] : '',
-          // alarmType: alarmData['type'] ? alarmData['type'] : '',
+          name: alarmData['name'] ,
+          weekDays: alarmData['weekDays'],
+          time: alarmData['time'] ,
+          date: alarmData['date'] ,
+          duration: alarmData['duration'],
+          pillId: alarmData['pillId'] ,
+          userId: alarmData['userId'] ,
+          alarmType: alarmData['type'],
         ));
       });
       _alarms = loadedAlarms;
@@ -107,7 +93,8 @@ class Alarm with ChangeNotifier {
     final url = Uri.https(
         'pill-trucker-default-rtdb.europe-west1.firebasedatabase.app',
         '/alarms.json',
-        {'auth': authToken});
+        // {'auth': authToken}
+        );
     try {
       final response = await http.post(
         url,
@@ -145,7 +132,8 @@ class Alarm with ChangeNotifier {
     final url = Uri.https(
         'pill-trucker-default-rtdb.europe-west1.firebasedatabase.app',
         '/alarms/$id.json',
-        {'auth': authToken});
+        // {'auth': authToken}
+        );
     final existingAlarmIndex = _alarms.indexWhere((prod) => prod.id == id);
     AlarmItem? existingAlarm = _alarms[existingAlarmIndex];
     _alarms.removeAt(existingAlarmIndex);

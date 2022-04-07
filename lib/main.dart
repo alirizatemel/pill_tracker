@@ -3,13 +3,13 @@ import 'package:pill_tracker/screens/home.dart';
 import 'package:pill_tracker/screens/pill.dart';
 import 'package:provider/provider.dart';
 
-import './providers/auth.dart';
-import './providers/profile.dart';
 import './providers/pills.dart';
 import './providers/alarm.dart';
+import './providers/profile.dart';
+import './providers/auth.dart';
 
-import './screens/tabs_screen.dart';
 import './screens/profile.dart';
+import './screens/tabs_screen.dart';
 import './screens/auth_screen.dart';
 import './screens/splash_screen.dart';
 
@@ -20,44 +20,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create:(_)=> Auth(),
+        ChangeNotifierProvider<Pills>(
+          create: (_)=>Pills([])
         ),
-        ChangeNotifierProxyProvider<Auth, Pills>(
-          create: (_)=>Pills('','',[]),
-          update: (ctx, auth, previousPills) => Pills(
-            auth.token,
-            auth.userId,
-            // ignore: unnecessary_null_comparison
-            previousPills == null ? [] : previousPills.items,
-          ),
-        ),
-        ChangeNotifierProxyProvider<Auth, Alarm>(
-          create:(_)=>Alarm('','',[]),
-          update: (_, auth, previousAlarms) => Alarm(
-            auth.token,
-            auth.userId,
-            // ignore: unnecessary_null_comparison
-            previousAlarms == null ? [] : previousAlarms.alarms,
-          ),
+        ChangeNotifierProvider<Alarm>(
+          create:(_)=>Alarm([])
         ),
       ],
-      child: Consumer<Auth>(
-        builder: (ctx, auth, _) => MaterialApp(
+      child: MaterialApp(
           title: 'pill tracker',
           theme: ThemeData(
             fontFamily: 'Lato', colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.purple).copyWith(secondary: Colors.green[800]),
           ),
-          home: auth.isAuth
-              ? HomeScreen()
-              : FutureBuilder(
-                  future: auth.tryAutoLogin(),
-                  builder: (ctx, authResultSnapshot) =>
-                      authResultSnapshot.connectionState ==
-                              ConnectionState.waiting
-                          ? SplashScreen()
-                          : AuthScreen(),
-          ),
+          home: HomeScreen(),
           routes: {
             // '/': (ctx) => const TabsScreen(),
             HomeScreen.routeName:(ctx)=>HomeScreen(),
@@ -65,7 +40,6 @@ class MyApp extends StatelessWidget {
             PillScreen.routeName: (ctx) => PillScreen([])
           },
         ),
-      ),
     );
   }
 }

@@ -8,9 +8,7 @@ import './pill.dart';
 
 class Pills with ChangeNotifier {
   List<Pill> _items = [];
-  final String authToken;
-  final String userId;
-  Pills(this.authToken, this.userId, this._items);
+  Pills(this._items);
   List<Pill> get items {
     return [..._items];
   }
