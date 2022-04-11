@@ -1,9 +1,7 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
-import 'package:pill_tracker/screens/new_alarm.dart';
-import '../models/http_exception.dart';
+import 'package:mongo_dart/mongo_dart.dart';
+import '../utils/constants.dart';
 
 enum AlarmType { Date, All }
 
@@ -27,12 +25,43 @@ class AlarmItem {
       required this.pillId,
       required this.userId,
       required this.alarmType});
+
+  Map<String, dynamic> toMap() {
+    return {
+      '_id': id,
+      'name': name,
+      'weekDays': weekDays,
+      'time': time,
+      'date': date,
+      'duration': duration,
+      'pillId': pillId,
+      'userId': userId,
+      'alarmType': alarmType,
+    };
+  }
+  AlarmItem.fromMap(Map<String, dynamic> map)
+      : name = map['name'],
+        id = map['_id'],
+        weekDays = map['weekDays'],
+        time = map['time'],
+        date = map['date'],
+        duration = map['duration'],
+        pillId = map['pillId'],
+        userId = map['userId'],
+        alarmType = map['alarmType'];
 }
 
 class Alarm with ChangeNotifier {
+  static var db, alarmCollection;
   List<AlarmItem> _alarms = [];
   Map<String, AlarmItem> _items = {};
   Alarm(this._alarms);
+
+  static connect() async {
+    db = await Db.create(MONGO_CONN_URL);
+    await db.open();
+    alarmCollection = db.collection(ALARM_COLLECTION);
+  }
 
   List<AlarmItem> get alarms {
     return [..._alarms];
@@ -42,109 +71,28 @@ class Alarm with ChangeNotifier {
     return _alarms.length;
   }
 
-  Future<void> fetchAndSetAlarms(
-    DateTime date,
-  ) async {
-    final weekDay = date.weekday;
-    // var filterString = 'orderBy="userId"&equalTo="$userId"';
-    // var filterString = '?orderBy="userId"&equalTo="123"';
-    var filterString = '';
-    // Map<String, String> queryParams = {
-    //   'auth': authToken,
-    //   'orderBy': 'userId',
-    //   'equalTo': '123',
-    //   // 'orderBy': 'weekDay',
-    //   // 'equalTo': 'pzt.'
-    // };
-    var url = Uri.https(
-        'pill-trucker-default-rtdb.europe-west1.firebasedatabase.app',
-        '/alarms.json' + filterString);
+  static Future<List<Map<String, dynamic>>> getDocuments() async {
     try {
-      final response = await http.get(url);
-      
-      final extractedData = json.decode(response.body) as Map<String, dynamic>;
-      
-      if (extractedData == null) {
-        return;
-      }
-      
-      final List<AlarmItem> loadedAlarms = [];
-      extractedData.forEach((alarmId, alarmData) {
-        loadedAlarms.add(AlarmItem(
-          id: 'asdas',
-          name: alarmData['name'] ,
-          weekDays: alarmData['weekDays'],
-          time: alarmData['time'] ,
-          date: alarmData['date'] ,
-          duration: alarmData['duration'],
-          pillId: alarmData['pillId'] ,
-          userId: alarmData['userId'] ,
-          alarmType: alarmData['type'],
-        ));
-      });
-      _alarms = loadedAlarms;
-      notifyListeners();
-    } catch (error) {
-      throw (error);
+      final alarms = await alarmCollection.find().toList();
+      return alarms;
+    } catch (e) {
+      print(e);
+      return Future.value(e);
     }
   }
 
-  Future<void> addAlarm(AlarmItem alarm) async {
-    final url = Uri.https(
-        'pill-trucker-default-rtdb.europe-west1.firebasedatabase.app',
-        '/alarms.json',
-        // {'auth': authToken}
-        );
-    try {
-      final response = await http.post(
-        url,
-        body: json.encode({
-          'name': alarm.name,
-          'weekDays': alarm.weekDays,
-          'time': alarm.time,
-          'date': alarm.date,
-          'duration': alarm.duration,
-          'pillId': alarm.pillId,
-          'userId': alarm.userId,
-          'alarmType': alarm.alarmType,
-        }),
-      );
-      final newAlarm = AlarmItem(
-        name: alarm.name,
-        weekDays: alarm.weekDays,
-        time: alarm.time,
-        date: alarm.date,
-        duration: alarm.duration,
-        pillId: alarm.pillId,
-        userId: alarm.userId,
-        alarmType: alarm.alarmType,
-        id: json.decode(response.body)['name'],
-      );
-      _alarms.add(newAlarm);
-      notifyListeners();
-    } catch (error) {
-      print(error);
-      throw error;
-    }
+  static insert(AlarmItem alarm) async {
+    await alarmCollection.insertAll([alarm.toMap()]);
   }
 
-  Future<void> deleteAlarm(String id) async {
-    final url = Uri.https(
-        'pill-trucker-default-rtdb.europe-west1.firebasedatabase.app',
-        '/alarms/$id.json',
-        // {'auth': authToken}
-        );
-    final existingAlarmIndex = _alarms.indexWhere((prod) => prod.id == id);
-    AlarmItem? existingAlarm = _alarms[existingAlarmIndex];
-    _alarms.removeAt(existingAlarmIndex);
-    notifyListeners();
-    final response = await http.delete(url);
-    if (response.statusCode >= 400) {
-      _alarms.insert(existingAlarmIndex, existingAlarm);
-      notifyListeners();
-      throw HttpException('Could not delete product.');
-    }
-    existingAlarm = null;
+  static update(AlarmItem alarm) async {
+    var u = await alarmCollection.findOne({"_id": alarm.id});
+    u["name"] = alarm.name;
+    await alarmCollection.save(u);
+  }
+
+  static delete(String alarmId) async {
+    await alarmCollection.remove(where.id(alarmId as ObjectId));
   }
 
   void clear() {

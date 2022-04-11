@@ -25,14 +25,15 @@ class _HomeScreenState extends State<HomeScreen> {
     _resetSelectedDate();
   }
 
-  Future<void> _addNewAlarm(AlarmItem newAlarm) async {    
-    await Provider.of<Alarm>(this.context, listen: false).addAlarm(newAlarm);
+  Future<void> _addNewAlarm(AlarmItem newAlarm) async {
+    // await Provider.of<Alarm>(this.context, listen: false).addAlarm(newAlarm);
+    Alarm.insert(newAlarm);
   }
 
   @override
   void didChangeDependencies() {
     if (_isInit) {
-      var today=DateTime.now();
+      var today = DateTime.now();
       _getAlarms(today);
     }
     _isInit = false;
@@ -42,8 +43,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void _getAlarms(date) {
     setState(() {
       _isLoading = true;
+      _selectedDate = date;
     });
-    Provider.of<Alarm>(this.context).fetchAndSetAlarms(date).then((_) {
+    Alarm.getDocuments().then((value) {
       setState(() {
         _isLoading = false;
       });
@@ -63,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _deleteAlarm(String id) {
-    Provider.of<Alarm>(this.context, listen: false).deleteAlarm(id);
+    Alarm.delete(id);
   }
 
   void _resetSelectedDate() {

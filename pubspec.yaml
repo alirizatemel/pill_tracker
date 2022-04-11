@@ -34,6 +34,7 @@ dependencies:
   http: ^0.13.4
   shared_preferences: ^0.5.3+1
   calendar_timeline: ^1.0.4
+  mongo_dart: ^0.7.4
 
 
   # The following adds the Cupertino Icons font to your application.
