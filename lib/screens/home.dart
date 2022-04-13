@@ -74,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final alarmData = Provider.of<Alarm>(context).alarms;
+    final alarmData = Alarm.getDocuments().then((value) => ,)
     return Scaffold(
       appBar: AppBar(title: const Text('Home')),
       drawer: AppDrawer(),
@@ -83,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: const Icon(Icons.add),
         onPressed: () => _startAddNewAlarm(context),
       ),
-      body: alarmData.isEmpty
+      body: alarmData.
           ? Column(
               children: <Widget>[
                 Text(
