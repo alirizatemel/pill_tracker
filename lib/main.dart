@@ -3,6 +3,8 @@ import 'package:pill_tracker/screens/home.dart';
 import 'package:pill_tracker/screens/pill.dart';
 import 'package:provider/provider.dart';
 
+import './providers/alarm.dart';
+
 import './providers/pills.dart';
 import './providers/alarm.dart';
 import './providers/profile.dart';
@@ -13,7 +15,16 @@ import './screens/tabs_screen.dart';
 import './screens/auth_screen.dart';
 import './screens/splash_screen.dart';
 
-void main() => runApp(MyApp());
+// void main() => runApp(MyApp());
+
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Alarm.connect();
+  runApp(MyApp());
+}
+
+
 
 class MyApp extends StatelessWidget {
   @override

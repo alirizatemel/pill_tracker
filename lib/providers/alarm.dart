@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import '../utils/constants.dart';
+import 'dart:async';
 
 enum AlarmType { Date, All }
 
@@ -52,7 +53,7 @@ class AlarmItem {
 }
 
 class Alarm with ChangeNotifier {
-  static var db, alarmCollection;
+  static var db;
   List<AlarmItem> _alarms = [];
   Map<String, AlarmItem> _items = {};
   Alarm(this._alarms);
@@ -60,7 +61,7 @@ class Alarm with ChangeNotifier {
   static connect() async {
     db = await Db.create(MONGO_CONN_URL);
     await db.open();
-    alarmCollection = db.collection(ALARM_COLLECTION);
+    
   }
 
   List<AlarmItem> get alarms {
@@ -73,25 +74,29 @@ class Alarm with ChangeNotifier {
 
   static Future<List<Map<String, dynamic>>> getDocuments() async {
     try {
+      var alarmCollection = db.collection(ALARM_COLLECTION);
       final alarms = await alarmCollection.find().toList();
       return alarms;
     } catch (e) {
       print(e);
-      return Future.value(e);
+      return Future.value(e as FutureOr<List<Map<String, dynamic>>>);
     }
   }
 
   static insert(AlarmItem alarm) async {
+    var alarmCollection = db.collection(ALARM_COLLECTION);
     await alarmCollection.insertAll([alarm.toMap()]);
   }
 
   static update(AlarmItem alarm) async {
+    var alarmCollection = db.collection(ALARM_COLLECTION);
     var u = await alarmCollection.findOne({"_id": alarm.id});
     u["name"] = alarm.name;
     await alarmCollection.save(u);
   }
 
   static delete(String alarmId) async {
+    var alarmCollection = db.collection(ALARM_COLLECTION);
     await alarmCollection.remove(where.id(alarmId as ObjectId));
   }
 
