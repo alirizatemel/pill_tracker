@@ -74,8 +74,10 @@ class Alarm with ChangeNotifier {
 
   static Future<List<Map<String, dynamic>>> getDocuments() async {
     try {
+      print('getDocuments');
       var alarmCollection = db.collection(ALARM_COLLECTION);
       final alarms = await alarmCollection.find().toList();
+      print(alarms);
       return alarms;
     } catch (e) {
       print(e);
