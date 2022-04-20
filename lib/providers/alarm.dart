@@ -8,7 +8,7 @@ import 'dart:convert';
 enum AlarmType { Date, All }
 
 class AlarmItem {
-  final String id;
+  final ObjectId id;
   final String name;
   final String weekDays;
   final String time;
@@ -78,14 +78,14 @@ class Alarm with ChangeNotifier {
       var alarmCollection = db.collection(ALARM_COLLECTION);
       final alarms = await alarmCollection.find().toList();
       final List<AlarmItem> loadedAlarms = [];
-      final extractedData = alarms as Map<String, dynamic>;
-      if (extractedData == null) {
-        return;
-      }
-      extractedData.forEach((alarmId, alarmData) {
+      // final extractedData = alarms as Map<String, dynamic>;
+      // if (extractedData == null) {
+      //   return;
+      // }
+      alarms.forEach((alarmData) {
         loadedAlarms.add(
           AlarmItem(
-              id: alarmId,
+              id: alarmData['_id'] as ObjectId,
               name: alarmData['name'],
               weekDays: alarmData['weekDays'],
               time: alarmData['time'],
@@ -103,9 +103,10 @@ class Alarm with ChangeNotifier {
     }
   }
 
-  static insert(AlarmItem alarm) async {
+  Future<void> insert(AlarmItem alarm) async {
     var alarmCollection = db.collection(ALARM_COLLECTION);
     await alarmCollection.insertAll([alarm.toMap()]);
+    notifyListeners();
   }
 
   static update(AlarmItem alarm) async {
@@ -115,9 +116,10 @@ class Alarm with ChangeNotifier {
     await alarmCollection.save(u);
   }
 
-  static delete(String alarmId) async {
+  Future<void> delete(ObjectId alarmId) async {
     var alarmCollection = db.collection(ALARM_COLLECTION);
-    await alarmCollection.remove(where.id(alarmId as ObjectId));
+    await alarmCollection.remove(where.id(alarmId));
+    notifyListeners();
   }
 
   void clear() {

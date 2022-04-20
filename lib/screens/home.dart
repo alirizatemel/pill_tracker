@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import 'package:path/path.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -27,8 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _addNewAlarm(AlarmItem newAlarm) async {
-    // await Provider.of<Alarm>(this.context, listen: false).addAlarm(newAlarm);
-    Alarm.insert(newAlarm);
+    await Provider.of<Alarm>(this.context, listen: false).insert(newAlarm);
   }
 
   // @override
@@ -65,9 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _deleteAlarm(String id) {
-    Alarm.delete(id);
-  }
+  void _deleteAlarm(mongo.ObjectId id) {}
 
   void _resetSelectedDate() {
     _selectedDate = DateTime.now().add(Duration(days: 5));
@@ -76,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: Provider.of<Alarm>(context,listen: false).getDocuments(),
+        future: Provider.of<Alarm>(context, listen: false).getDocuments(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Container(
@@ -106,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: const Icon(Icons.add),
                   onPressed: () => _startAddNewAlarm(context),
                 ),
-                body:  !snapshot.hasData
+                body: snapshot.hasData
                     ? Column(
                         children: <Widget>[
                           Text(
@@ -141,7 +139,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           const SizedBox(height: 20),
                           Consumer<Alarm>(
-                            builder:(ctx,alarmData,child)=> ListView.builder(
+                            builder: (ctx, alarmData, child) =>
+                                ListView.builder(
                               shrinkWrap: true,
                               itemBuilder: (ctx, index) {
                                 return Card(
@@ -162,17 +161,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                     title: Text(
                                       alarmData.alarms[index].name,
-                                    //  alarmData[index].name,
+                                      //  alarmData[index].name,
                                       style:
                                           Theme.of(context).textTheme.headline6,
                                     ),
-                                    subtitle: Text(''),
+                                    subtitle:
+                                        Text(alarmData.alarms[index].time),
                                     trailing: IconButton(
-                                      icon: const Icon(Icons.delete),
-                                      color: Theme.of(context).errorColor,
-                                      onPressed: () =>
-                                          _deleteAlarm(''),
-                                    ),
+                                        icon: const Icon(Icons.delete),
+                                        color: Theme.of(context).errorColor,
+                                        onPressed: () async {
+                                          Provider.of<Alarm>(context,
+                                                  listen: false)
+                                              .delete(
+                                                  alarmData.alarms[index].id);
+                                        }),
                                   ),
                                 );
                               },
