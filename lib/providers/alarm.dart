@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import '../utils/constants.dart';
 import 'dart:async';
+import 'dart:convert';
 
 enum AlarmType { Date, All }
 
@@ -40,6 +41,7 @@ class AlarmItem {
       'alarmType': alarmType,
     };
   }
+
   AlarmItem.fromMap(Map<String, dynamic> map)
       : name = map['name'],
         id = map['_id'],
@@ -61,7 +63,6 @@ class Alarm with ChangeNotifier {
   static connect() async {
     db = await Db.create(MONGO_CONN_URL);
     await db.open();
-    
   }
 
   List<AlarmItem> get alarms {
@@ -72,16 +73,33 @@ class Alarm with ChangeNotifier {
     return _alarms.length;
   }
 
-  static Future<List<Map<String, dynamic>>> getDocuments() async {
+  Future<void> getDocuments() async {
     try {
-      print('getDocuments');
       var alarmCollection = db.collection(ALARM_COLLECTION);
       final alarms = await alarmCollection.find().toList();
-      print(alarms);
-      return alarms;
+      final List<AlarmItem> loadedAlarms = [];
+      final extractedData = alarms as Map<String, dynamic>;
+      if (extractedData == null) {
+        return;
+      }
+      extractedData.forEach((alarmId, alarmData) {
+        loadedAlarms.add(
+          AlarmItem(
+              id: alarmId,
+              name: alarmData['name'],
+              weekDays: alarmData['weekDays'],
+              time: alarmData['time'],
+              date: alarmData['date'],
+              duration: alarmData['duration'],
+              pillId: alarmData['pillId'],
+              userId: alarmData['userId'],
+              alarmType: alarmData['alarmType']),
+        );
+      });
+      _alarms = loadedAlarms.reversed.toList();
+      notifyListeners();
     } catch (e) {
       print(e);
-      return Future.value(e as FutureOr<List<Map<String, dynamic>>>);
     }
   }
 

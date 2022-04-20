@@ -15,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  var alarmData = [];
+  //var alarmData = [];
   late DateTime _selectedDate;
   var _isInit = true;
   var _isLoading = false;
@@ -76,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: Alarm.getDocuments(),
+        future: Provider.of<Alarm>(context,listen: false).getDocuments(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Container(
@@ -106,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: const Icon(Icons.add),
                   onPressed: () => _startAddNewAlarm(context),
                 ),
-                body: !snapshot.hasData
+                body:  !snapshot.hasData
                     ? Column(
                         children: <Widget>[
                           Text(
@@ -140,41 +140,44 @@ class _HomeScreenState extends State<HomeScreen> {
                             locale: 'en',
                           ),
                           const SizedBox(height: 20),
-                          ListView.builder(
-                            shrinkWrap: true,
-                            itemBuilder: (ctx, index) {
-                              return Card(
-                                elevation: 5,
-                                margin: const EdgeInsets.symmetric(
-                                  vertical: 8,
-                                  horizontal: 5,
-                                ),
-                                child: ListTile(
-                                  leading: const CircleAvatar(
-                                    radius: 30,
-                                    child: Padding(
-                                      padding: EdgeInsets.all(6),
-                                      child: FittedBox(
-                                        child: Text('Pill Image'),
+                          Consumer<Alarm>(
+                            builder:(ctx,alarmData,child)=> ListView.builder(
+                              shrinkWrap: true,
+                              itemBuilder: (ctx, index) {
+                                return Card(
+                                  elevation: 5,
+                                  margin: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                    horizontal: 5,
+                                  ),
+                                  child: ListTile(
+                                    leading: const CircleAvatar(
+                                      radius: 30,
+                                      child: Padding(
+                                        padding: EdgeInsets.all(6),
+                                        child: FittedBox(
+                                          child: Text('Pill Image'),
+                                        ),
                                       ),
                                     ),
+                                    title: Text(
+                                      alarmData.alarms[index].name,
+                                    //  alarmData[index].name,
+                                      style:
+                                          Theme.of(context).textTheme.headline6,
+                                    ),
+                                    subtitle: Text(''),
+                                    trailing: IconButton(
+                                      icon: const Icon(Icons.delete),
+                                      color: Theme.of(context).errorColor,
+                                      onPressed: () =>
+                                          _deleteAlarm(''),
+                                    ),
                                   ),
-                                  title: Text(
-                                   alarmData[index]._id,
-                                    style:
-                                        Theme.of(context).textTheme.headline6,
-                                  ),
-                                  subtitle: Text(alarmData[index].time),
-                                  trailing: IconButton(
-                                    icon: const Icon(Icons.delete),
-                                    color: Theme.of(context).errorColor,
-                                    onPressed: () =>
-                                        _deleteAlarm(alarmData[index]._id),
-                                  ),
-                                ),
-                              );
-                            },
-                            itemCount: 0,
+                                );
+                              },
+                              itemCount: alarmData.alarms.length,
+                            ),
                           ),
                         ],
                       ),
