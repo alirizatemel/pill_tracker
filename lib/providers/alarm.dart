@@ -106,6 +106,7 @@ class Alarm with ChangeNotifier {
   Future<void> insert(AlarmItem alarm) async {
     var alarmCollection = db.collection(ALARM_COLLECTION);
     await alarmCollection.insertAll([alarm.toMap()]);
+    _alarms.add(alarm);
     notifyListeners();
   }
 
@@ -119,6 +120,9 @@ class Alarm with ChangeNotifier {
   Future<void> delete(ObjectId alarmId) async {
     var alarmCollection = db.collection(ALARM_COLLECTION);
     await alarmCollection.remove(where.id(alarmId));
+    final existingAlarmIndex=_alarms.indexWhere((alarm) => alarm.id==alarmId);
+    var existingAlarm=_alarms[existingAlarmIndex];
+    _alarms.removeAt(existingAlarmIndex);
     notifyListeners();
   }
 
